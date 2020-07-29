@@ -6,6 +6,7 @@
 
 //function declaration
 void replaceAll(char *str, const char *oldWord, const char *newWord);
+char* censoring(int noAsterisks);
 
 int main(void){
     /* File pointer to hold reference of input file */
@@ -14,18 +15,12 @@ int main(void){
     char path[100];
     
     char buffer[BUFFER_SIZE];
-    char oldWord[100], newWord[100];
-
 
     printf("Enter path of source file: ");
     scanf("%s", path);
 
-    printf("Enter word to replace: ");
-    scanf("%s", oldWord);
-
-    printf("Replace '%s' with: ", oldWord);
-    scanf("%s", newWord);
-
+    char* oldWords[] = {"fuck", "bitch", "asshole"};
+    char* newWord = "****";
 
     /*  Open all required files */
     fPtr  = fopen(path, "r");
@@ -44,10 +39,18 @@ int main(void){
      * Read line from source file and write to destination
      * file after replacing given word.
      */
+    int noWords = sizeof(oldWords)/sizeof(oldWords[0]);
     while ((fgets(buffer, BUFFER_SIZE, fPtr)) != NULL)
     {
         // Replace all occurrence of word from current line
-        replaceAll(buffer, oldWord, newWord);
+	char* oldWord;
+	for(int i = 0; i < noWords; ++i){
+	    oldWord = oldWords[i];
+	    //int noAsterisks = strlen(oldWord);
+	    //
+	    replaceAll(buffer, oldWord, newWord);
+	}
+
 
         // After replacing write it to temp file.
         fputs(buffer, fTemp);
@@ -62,9 +65,17 @@ int main(void){
 
     /* Rename temp file as original file */
     rename("replace.tmp", path);
-    printf("\nSuccessfully replaced all occurrences of '%s' with '%s'.", oldWord, newWord);
+    printf("\nSuccessfully replaced all swear words");
 
     return 0;
+}
+
+char* censoring(const int noAsterisks){
+    char* output = "*";
+    for(int i = 1; i < noAsterisks; ++i){
+	strcat(output, "*");
+    }
+    return output;
 }
 
 /**
