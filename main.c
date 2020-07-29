@@ -5,7 +5,7 @@
 #define BUFFER_SIZE 1000
 
 //function declaration
-void replaceAll(char *str, const char *oldWord, const char *newWord);
+void replaceAll(char *str, const char *oldWord, char* newWord);
 char* censoring(int noAsterisks);
 
 int main(void){
@@ -20,7 +20,6 @@ int main(void){
     scanf("%s", path);
 
     char* oldWords[] = {"fuck", "bitch", "asshole"};
-    char* newWord = "****";
 
     /*  Open all required files */
     fPtr  = fopen(path, "r");
@@ -39,15 +38,20 @@ int main(void){
      * Read line from source file and write to destination
      * file after replacing given word.
      */
+
+    char* oldWord;
+    char* newWord;
+    newWord = (char *)malloc(sizeof(char));
     int noWords = sizeof(oldWords)/sizeof(oldWords[0]);
+    
     while ((fgets(buffer, BUFFER_SIZE, fPtr)) != NULL)
     {
         // Replace all occurrence of word from current line
-	char* oldWord;
 	for(int i = 0; i < noWords; ++i){
 	    oldWord = oldWords[i];
-	    //int noAsterisks = strlen(oldWord);
-	    //
+	    int noAsterisks = strlen(oldWord);
+	    //printf("%d \n", noAsterisks);
+	    newWord = (char *)realloc(newWord, noAsterisks*sizeof(char));
 	    replaceAll(buffer, oldWord, newWord);
 	}
 
@@ -55,6 +59,7 @@ int main(void){
         // After replacing write it to temp file.
         fputs(buffer, fTemp);
     }
+    free(newWord);
 
     /* Close all files to release resource */
     fclose(fPtr);
@@ -70,24 +75,21 @@ int main(void){
     return 0;
 }
 
-char* censoring(const int noAsterisks){
-    char* output = "*";
-    for(int i = 1; i < noAsterisks; ++i){
-	strcat(output, "*");
-    }
-    return output;
-}
-
 /**
  * Replace all occurrences of a given a word in string.
  */
-void replaceAll(char *str, const char *oldWord, const char *newWord)
+void replaceAll(char *str, const char *oldWord, char* newWord)
 {
     char *pos, temp[BUFFER_SIZE];
     int index = 0;
     int owlen;
 
+    
     owlen = strlen(oldWord);
+    for(int i = 0; i < owlen; i++){
+	*(newWord + i) = '*';
+    }
+    *(newWord + owlen) = '\0';
 
     /*
      * Repeat till all occurrences are replaced.
