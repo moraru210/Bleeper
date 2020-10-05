@@ -1,3 +1,3 @@
-omg **** this *****!
-asshole that and this bitch, like i hate this bitch!
-i hate liverpool fc, fuck them.
+Used this file to test
+the Bleeper's ability to "bleep" several words
+in a text file.
