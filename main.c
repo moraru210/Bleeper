@@ -19,8 +19,6 @@ int main(void){
     printf("Enter path of source file: ");
     scanf("%s", path);
 
-    char* oldWords[] = {"fuck", "bitch", "asshole"};
-
     /*  Open all required files */
     fPtr  = fopen(path, "r");
     fTemp = fopen("replace.tmp", "w");
@@ -39,25 +37,23 @@ int main(void){
      * file after replacing given word.
      */
 
-    char* oldWord;
+    //char* oldWord;
+    char toReplace[20];
+    printf("what word do you want to bleep out? ");
+    scanf("%s", toReplace);
+
     char* newWord;
     newWord = (char *)malloc(sizeof(char));
-    int noWords = sizeof(oldWords)/sizeof(oldWords[0]);
+    //int noWords = (255 * numToReplace * sizeof(char))/(sizeof(char) * 255);
     
-    while ((fgets(buffer, BUFFER_SIZE, fPtr)) != NULL)
-    {
-        // Replace all occurrence of word from current line
-	for(int i = 0; i < noWords; ++i){
-	    oldWord = oldWords[i];
-	    int noAsterisks = strlen(oldWord);
-	    //printf("%d \n", noAsterisks);
-	    newWord = (char *)realloc(newWord, noAsterisks*sizeof(char));
-	    replaceAll(buffer, oldWord, newWord);
-	}
-
-
-        // After replacing write it to temp file.
-        fputs(buffer, fTemp);
+    while ((fgets(buffer, BUFFER_SIZE, fPtr)) != NULL) {
+            int noAsterisks = strlen(toReplace);
+            //printf("%d \n", noAsterisks);
+            newWord = (char *)realloc(newWord, noAsterisks*sizeof(char));
+            replaceAll(buffer, toReplace, newWord);
+            // After replacing write it to temp file.
+            fputs(buffer, fTemp);
+            
     }
     free(newWord);
 
@@ -70,8 +66,7 @@ int main(void){
 
     /* Rename temp file as original file */
     rename("replace.tmp", path);
-    printf("\nSuccessfully replaced all swear words");
-
+    printf("\nSuccessfully replaced all occurances of %s\n", toReplace);
     return 0;
 }
 
@@ -84,10 +79,10 @@ void replaceAll(char *str, const char *oldWord, char* newWord)
     int index = 0;
     int owlen;
 
-    
+    //to replace the old word with the same amount of asterisks
     owlen = strlen(oldWord);
     for(int i = 0; i < owlen; i++){
-	*(newWord + i) = '*';
+	    *(newWord + i) = '*';
     }
     *(newWord + owlen) = '\0';
 
